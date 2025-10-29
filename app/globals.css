@@ -1,0 +1,24 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+@import 'tailwindcss';
+
+/* YourComponent.css */
+.glass-container {
+    /* Set a background for the glass effect to be applied over */
+    /* background-image: linear-gradient(to top right, #ff7e5f, #feb47b); */
+    height: 100vh;
+    /* display: flex;
+    justify-content: center;
+    align-items: center; */
+  }
+  
+  .glass-effect {
+    /* From https://css.glass */
+background: rgba(59, 102, 142, 0.2);
+border-radius: 16px;
+box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+backdrop-filter: blur(5px);
+-webkit-backdrop-filter: blur(5px);
+border: 1px solid rgba(59, 102, 142, 0.3);
+  }
