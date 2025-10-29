@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -9,16 +11,6 @@ import {
   Bell,
 } from "lucide-react";
 
-// AnimatedHeader.component.jsx
-// Default export: <AnimatedHeader />
-// Requirements satisfied:
-// - Stylish glassy gradient header like the provided image
-// - Animated search that expands on focus with suggestion list
-// - 'Post' button opens a modal
-// - Notifications and Messages open animated panels
-// - Framer Motion used for smooth animations
-// - Tailwind CSS classes used for styling (assumes Tailwind is configured)
-
 export default function AnimatedHeader() {
   const [isPostOpen, setPostOpen] = useState(false);
   const [isNotifOpen, setNotifOpen] = useState(false);
@@ -26,15 +18,18 @@ export default function AnimatedHeader() {
   const [searchValue, setSearchValue] = useState("");
   const [isSearchFocused, setSearchFocused] = useState(false);
 
-  const notifRef = useRef(null);
-  const msgRef = useRef(null);
+  const notifRef = useRef<HTMLDivElement | null>(null);
+  const msgRef = useRef<HTMLDivElement | null>(null);
 
   // close on outside click
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     function handleClick(e: MouseEvent) {
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+      if (
+        notifRef.current &&
+        !notifRef.current.contains(e.target as Node)
+      ) {
         setNotifOpen(false);
       }
       if (msgRef.current && !msgRef.current.contains(e.target as Node)) {
@@ -46,6 +41,7 @@ export default function AnimatedHeader() {
     return () => window.removeEventListener("mousedown", handleClick);
   }, []);
 
+  // close on ESC
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -62,14 +58,11 @@ export default function AnimatedHeader() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-
-
   return (
     <header className="relative rounded-2xl p-4 md:p-6 mb-6 shadow-2xl">
       {/* Background gradient + glass effect */}
       <div className="absolute inset-0 rounded-2xl -z-10 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#1F3F78] via-[#0f6b77] to-[#168D97] opacity-95 blur-sm transform-gpu" />
-        {/* subtle decorative stripes */}
         <svg className="absolute inset-0 opacity-10" preserveAspectRatio="none">
           <defs>
             <linearGradient id="g" x1="0" x2="1">
@@ -87,10 +80,12 @@ export default function AnimatedHeader() {
           <div className="bg-white/10 backdrop-blur-sm p-3 rounded-xl ring-1 ring-white/10">
             <Package className="w-8 h-8 text-white drop-shadow" />
           </div>
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">EPC 2.0</h1>
+          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            EPC 2.0
+          </h1>
         </div>
 
-        {/* Center: animated search */}
+        {/* Center: search */}
         <div className="flex-1 max-w-3xl mx-4">
           <div className="relative">
             <motion.div
@@ -100,13 +95,14 @@ export default function AnimatedHeader() {
             >
               <motion.input
                 value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setSearchValue(e.target.value)
+                }
                 onFocus={() => setSearchFocused(true)}
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
                 placeholder="Search globally or ask AI to find buyers..."
                 className="w-full pl-12 pr-36 py-3 rounded-xl bg-white/12 backdrop-blur-md text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all shadow-md"
                 as="input"
-                // animate width for subtle pop
                 style={{
                   boxShadow: isSearchFocused
                     ? "0 8px 30px rgba(7, 90, 100, 0.25)"
@@ -116,7 +112,10 @@ export default function AnimatedHeader() {
 
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/70" />
 
-              <button className="absolute right-12 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-lg transition-all" aria-label="voice search">
+              <button
+                className="absolute right-12 top-1/2 -translate-y-1/2 p-2 hover:bg-white/10 rounded-lg transition-all"
+                aria-label="voice search"
+              >
                 <Mic className="w-5 h-5 text-white/90" />
               </button>
 
@@ -130,7 +129,6 @@ export default function AnimatedHeader() {
               </motion.button>
             </motion.div>
 
-            {/* Suggestions dropdown (animated) */}
             <AnimatePresence>
               {isSearchFocused && (
                 <motion.ul
@@ -140,7 +138,6 @@ export default function AnimatedHeader() {
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   className="absolute left-0 right-0 mt-2 bg-white/6 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-xl text-white z-30"
                 >
-                  {/* Static suggestions — replace with live results */}
                   {[
                     "Find buyers in Germany",
                     "Top suppliers for electronics",
@@ -163,21 +160,33 @@ export default function AnimatedHeader() {
           </div>
         </div>
 
-        {/* Right: action icons */}
+        {/* Right: icons */}
         <div className="flex items-center gap-3">
-          <ActionIcon onClick={() => setMsgOpen((s) => !s)} icon={<MessageSquare className="w-6 h-6 text-white" />} ariaLabel="Messages">
+          <ActionIcon
+            onClick={() => setMsgOpen((s) => !s)}
+            icon={<MessageSquare className="w-6 h-6 text-white" />}
+            ariaLabel="Messages"
+          >
             <div ref={msgRef}>
               <MessagesPanel open={isMsgOpen} />
             </div>
           </ActionIcon>
 
-          <ActionIcon onClick={() => setNotifOpen((s) => !s)} icon={<Bell className="w-6 h-6 text-white" />} ariaLabel="Notifications">
+          <ActionIcon
+            onClick={() => setNotifOpen((s) => !s)}
+            icon={<Bell className="w-6 h-6 text-white" />}
+            ariaLabel="Notifications"
+          >
             <div ref={notifRef}>
               <NotificationsPanel open={isNotifOpen} />
             </div>
           </ActionIcon>
 
-          <ActionIcon onClick={() => alert("Go to chat — placeholder")} icon={<MessageCircle className="w-6 h-6 text-white" />} ariaLabel="Open chat" />
+          <ActionIcon
+            onClick={() => alert("Go to chat — placeholder")}
+            icon={<MessageCircle className="w-6 h-6 text-white" />}
+            ariaLabel="Open chat"
+          />
 
           <motion.button
             whileHover={{ scale: 1.03 }}
@@ -191,7 +200,6 @@ export default function AnimatedHeader() {
         </div>
       </div>
 
-      {/* Modals & Panels */}
       <AnimatePresence>
         {isPostOpen && <PostModal onClose={() => setPostOpen(false)} />}
       </AnimatePresence>
@@ -199,8 +207,14 @@ export default function AnimatedHeader() {
   );
 }
 
-// Small reusable action icon wrapper
-function ActionIcon({ children, icon, onClick, ariaLabel }) {
+type ActionIconProps = {
+  children?: React.ReactNode;
+  icon: React.ReactNode;
+  onClick?: () => void;
+  ariaLabel?: string;
+};
+
+function ActionIcon({ children, icon, onClick, ariaLabel }: ActionIconProps) {
   return (
     <div className="relative">
       <motion.button
@@ -212,14 +226,12 @@ function ActionIcon({ children, icon, onClick, ariaLabel }) {
       >
         {icon}
       </motion.button>
-
-      {/* Render children (panels) next to the icon if provided */}
       {children}
     </div>
   );
 }
 
-function NotificationsPanel({ open }) {
+function NotificationsPanel({ open }: { open: boolean }) {
   return (
     <AnimatePresence>
       {open && (
@@ -234,15 +246,20 @@ function NotificationsPanel({ open }) {
             <h3 className="font-semibold text-white">Notifications</h3>
             <button className="text-sm text-white/60">Mark all read</button>
           </div>
-
           <ul className="space-y-2">
             {[1, 2, 3].map((i) => (
               <li key={i} className="px-3 py-2 rounded-lg hover:bg-white/8 cursor-pointer">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-white/12 flex items-center justify-center">🔔</div>
+                  <div className="w-10 h-10 rounded-lg bg-white/12 flex items-center justify-center">
+                    🔔
+                  </div>
                   <div>
-                    <div className="text-sm text-white/90 font-medium">New lead assigned</div>
-                    <div className="text-xs text-white/60 mt-1">You have a new lead from Brazil</div>
+                    <div className="text-sm text-white/90 font-medium">
+                      New lead assigned
+                    </div>
+                    <div className="text-xs text-white/60 mt-1">
+                      You have a new lead from Brazil
+                    </div>
                   </div>
                 </div>
               </li>
@@ -254,7 +271,7 @@ function NotificationsPanel({ open }) {
   );
 }
 
-function MessagesPanel({ open }) {
+function MessagesPanel({ open }: { open: boolean }) {
   return (
     <AnimatePresence>
       {open && (
@@ -269,14 +286,20 @@ function MessagesPanel({ open }) {
             <h3 className="font-semibold text-white">Messages</h3>
             <button className="text-sm text-white/60">New message</button>
           </div>
-
           <ul className="space-y-2">
             {["Ali", "Sara", "Omar"].map((name) => (
-              <li key={name} className="px-3 py-2 rounded-lg hover:bg-white/8 cursor-pointer flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#6ee7b7] to-[#3b82f6] flex items-center justify-center text-black font-bold">{name[0]}</div>
+              <li
+                key={name}
+                className="px-3 py-2 rounded-lg hover:bg-white/8 cursor-pointer flex items-center gap-3"
+              >
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#6ee7b7] to-[#3b82f6] flex items-center justify-center text-black font-bold">
+                  {name[0]}
+                </div>
                 <div>
                   <div className="text-sm text-white/90 font-medium">{name}</div>
-                  <div className="text-xs text-white/60 mt-1">Hey — are you available for a quick call?</div>
+                  <div className="text-xs text-white/60 mt-1">
+                    Hey — are you available for a quick call?
+                  </div>
                 </div>
               </li>
             ))}
@@ -287,9 +310,9 @@ function MessagesPanel({ open }) {
   );
 }
 
-function PostModal({ onClose }) {
+function PostModal({ onClose }: { onClose: () => void }) {
   const [content, setContent] = useState("");
-  const fileRef = useRef(null);
+  const fileRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <motion.div
@@ -316,7 +339,9 @@ function PostModal({ onClose }) {
 
         <textarea
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+            setContent(e.target.value)
+          }
           rows={5}
           placeholder="Write something..."
           className="w-full p-3 rounded-xl bg-white/10 text-white placeholder-white/60 border border-white/8 focus:outline-none focus:ring-2 focus:ring-white/20"
@@ -331,16 +356,20 @@ function PostModal({ onClose }) {
             >
               Upload image
             </button>
-            <button className="px-3 py-2 bg-white/8 rounded-lg text-white/90">Add emojis</button>
+            <button className="px-3 py-2 bg-white/8 rounded-lg text-white/90">
+              Add emojis
+            </button>
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="px-4 py-2 rounded-lg bg-white/8 text-white/80" onClick={onClose}>
+            <button
+              className="px-4 py-2 rounded-lg bg-white/8 text-white/80"
+              onClick={onClose}
+            >
               Cancel
             </button>
             <button
               onClick={() => {
-                // placeholder for real submit
                 console.log({ content });
                 onClose();
               }}
