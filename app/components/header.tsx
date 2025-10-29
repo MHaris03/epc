@@ -102,14 +102,12 @@ export default function AnimatedHeader() {
                 onBlur={() => setTimeout(() => setSearchFocused(false), 150)}
                 placeholder="Search globally or ask AI to find buyers..."
                 className="w-full pl-12 pr-36 py-3 rounded-xl bg-white/12 backdrop-blur-md text-white placeholder-white/60 border border-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all shadow-md"
-                as="input"
                 style={{
                   boxShadow: isSearchFocused
                     ? "0 8px 30px rgba(7, 90, 100, 0.25)"
                     : "0 4px 18px rgba(0,0,0,0.12)",
                 }}
               />
-
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/70" />
 
               <button
