@@ -100,7 +100,7 @@ export default function Tradewall() {
             <div className="flex items-center gap-2">
               {/* <img src={p.flag} alt="flag" className="w-5 h-5" /> */}
               <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold flex items-center gap-2">
-               <Check className="w-4"/>
+                <Check className="w-4" />
                 {p.verified ? 'Verified' : 'Unverified'}
               </span>
             </div>
@@ -129,7 +129,7 @@ export default function Tradewall() {
             <InfoTile label="Shipping" value={p.shipping} />
             <InfoTile label="Shipping" value={p.shipping} />
             <button className="flex-1 col-span-2 bg-[#168D97ff] text-white py-3 rounded-xl  hover:shadow-lg hover:scale-105 transition-all flex items-center justify-center gap-2">
-             <MessageCircleIcon/> Chat Offer - Sale
+              <MessageCircleIcon /> Chat Offer - Sale
             </button>
           </div>
 
@@ -146,7 +146,12 @@ export default function Tradewall() {
   );
 }
 
-function InfoTile({ label, value }) {
+type InfoTileProps = {
+  label: string;
+  value?: string | number;
+};
+
+function InfoTile({ label, value }: InfoTileProps) {
   return (
     <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3">
       {/* <div className="text-xs text-gray-600">{label}</div> */}
