@@ -31,16 +31,20 @@ export default function AnimatedHeader() {
 
   // close on outside click
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     function handleClick(e) {
       if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
       if (msgRef.current && !msgRef.current.contains(e.target)) setMsgOpen(false);
     }
+
     window.addEventListener("mousedown", handleClick);
     return () => window.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // close on ESC
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     function onKey(e) {
       if (e.key === "Escape") {
         setPostOpen(false);
@@ -49,9 +53,11 @@ export default function AnimatedHeader() {
         setSearchFocused(false);
       }
     }
+
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
 
   return (
     <header className="relative rounded-2xl p-4 md:p-6 mb-6 shadow-2xl">
