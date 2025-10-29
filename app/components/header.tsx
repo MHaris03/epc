@@ -33,9 +33,13 @@ export default function AnimatedHeader() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    function handleClick(e) {
-      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
-      if (msgRef.current && !msgRef.current.contains(e.target)) setMsgOpen(false);
+    function handleClick(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+      if (msgRef.current && !msgRef.current.contains(e.target as Node)) {
+        setMsgOpen(false);
+      }
     }
 
     window.addEventListener("mousedown", handleClick);
@@ -45,7 +49,7 @@ export default function AnimatedHeader() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    function onKey(e) {
+    function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") {
         setPostOpen(false);
         setNotifOpen(false);
@@ -57,6 +61,7 @@ export default function AnimatedHeader() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
 
 
   return (
